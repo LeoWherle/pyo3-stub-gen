@@ -35,9 +35,9 @@ impl_numpy_scalar!(f64, "float64");
 impl_numpy_scalar!(num_complex::Complex32, "complex64");
 impl_numpy_scalar!(num_complex::Complex64, "complex128");
 
-impl<T: NumPyScalar, D> PyStubType for PyArray<T, D> {
+impl<T: PyStubType, D> PyStubType for PyArray<T, D> {
     fn type_output() -> TypeInfo {
-        let TypeInfo { name, mut import } = T::type_();
+        let TypeInfo { name, mut import } = T::type_output();
         import.insert("numpy.typing".into());
         TypeInfo {
             name: format!("numpy.typing.NDArray[{name}]"),
@@ -57,7 +57,7 @@ impl PyStubType for PyUntypedArray {
 
 impl<T, D> PyStubType for PyReadonlyArray<'_, T, D>
 where
-    T: NumPyScalar + Element,
+    T: PyStubType + Element,
     D: Dimension,
 {
     fn type_output() -> TypeInfo {
@@ -67,7 +67,7 @@ where
 
 impl<T, D> PyStubType for PyReadwriteArray<'_, T, D>
 where
-    T: NumPyScalar + Element,
+    T: PyStubType + Element,
     D: Dimension,
 {
     fn type_output() -> TypeInfo {
