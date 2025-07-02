@@ -4,6 +4,7 @@ use numpy::{
     ndarray::Dimension, Element, PyArray, PyArrayDescr, PyReadonlyArray, PyReadwriteArray,
     PyUntypedArray,
 };
+use pyo3::PyAny;
 
 trait NumPyScalar {
     fn type_() -> TypeInfo;
@@ -22,6 +23,7 @@ macro_rules! impl_numpy_scalar {
     };
 }
 
+impl_numpy_scalar!(bool, "bool_");
 impl_numpy_scalar!(i8, "int8");
 impl_numpy_scalar!(i16, "int16");
 impl_numpy_scalar!(i32, "int32");
@@ -34,6 +36,16 @@ impl_numpy_scalar!(f32, "float32");
 impl_numpy_scalar!(f64, "float64");
 impl_numpy_scalar!(num_complex::Complex32, "complex64");
 impl_numpy_scalar!(num_complex::Complex64, "complex128");
+
+impl NumPyScalar for PyAny {
+    fn type_() -> TypeInfo {
+        TypeInfo {
+            name: "numpy.typing.NDArray[typing.Any]".into(),
+            import: hashset!["numpy.typing".into(), "typing".into()],
+        }
+    }
+}
+
 
 impl<T: NumPyScalar, D> PyStubType for PyArray<T, D> {
     fn type_output() -> TypeInfo {
