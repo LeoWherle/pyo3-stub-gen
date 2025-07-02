@@ -4,7 +4,6 @@ use numpy::{
     ndarray::Dimension, Element, PyArray, PyArrayDescr, PyReadonlyArray, PyReadwriteArray,
     PyUntypedArray,
 };
-use pyo3::PyAny;
 
 trait NumPyScalar {
     fn type_() -> TypeInfo;
@@ -37,7 +36,7 @@ impl_numpy_scalar!(f64, "float64");
 impl_numpy_scalar!(num_complex::Complex32, "complex64");
 impl_numpy_scalar!(num_complex::Complex64, "complex128");
 
-impl NumPyScalar for PyAny {
+impl NumPyScalar for pyo3::Py<pyo3::PyAny> {
     fn type_() -> TypeInfo {
         TypeInfo {
             name: "numpy.typing.NDArray[typing.Any]".into(),
